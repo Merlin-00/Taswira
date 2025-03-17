@@ -14,7 +14,9 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    // Détection des changements de zone avec coalescence des événements
     provideZoneChangeDetection({ eventCoalescing: true }),
+    // Configuration du routeur avec liaison des entrées des composants et défilement en mémoire
     provideRouter(
       routes,
       withComponentInputBinding(),
@@ -23,7 +25,9 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'enabled',
       })
     ),
+    // Hydratation du client avec relecture des événements
     provideClientHydration(withEventReplay()),
+    // Fourniture du client HTTP avec prise en charge de fetch
     provideHttpClient(withFetch()),
   ],
 };

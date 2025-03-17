@@ -7,12 +7,16 @@ import { ToolbarComponent } from './pages/shared/toolbar.component';
   selector: 'app-root',
   imports: [RouterOutlet, FooterComponent, ToolbarComponent],
   template: `
+    <!-- Barre d'outils -->
     <app-toolbar />
+    <!-- Contenu principal -->
     <router-outlet />
+    <!-- Pied de page -->
     <app-footer />
   `,
   styles: [],
 })
 export class AppComponent {
+  // Titre de l'application
   title = 'Taswira';
 }

@@ -13,9 +13,12 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./movies.component.scss'],
 })
 export default class MoviesComponent implements OnInit {
+  // Propriété pour stocker les films populaires
   movies?: Movie[];
+  // Propriété pour stocker les bandes-annonces des films
   trailers: { [key: number]: any[] } = {};
   api = inject(ApiService);
+  // Liste des genres d'animes
   genres = [
     { id: 28, name: 'Action' },
     { id: 12, name: 'Aventure' },
@@ -26,20 +29,24 @@ export default class MoviesComponent implements OnInit {
     { id: 10749, name: 'Romance' },
     { id: 878, name: 'Science-Fiction' },
   ];
+  // Propriété pour stocker les animes par genre
   animes: Movie[] = [];
 
+  // Méthode pour récupérer les animes par genre
   getAnimesByChange(genreId: number): void {
     this.api.getAnimesByGenre(genreId).subscribe((anime) => {
       this.animes = anime.filter((anim) => anim.original_language === 'ja');
     });
   }
 
+  // Méthode appelée lors du changement de genre
   onGenreChange(event: Event): void {
     const genreId = (event.target as HTMLSelectElement).value;
     this.getAnimesByChange(Number(genreId));
   }
 
   ngOnInit(): void {
+    // Récupérer les films populaires au chargement du composant
     this.api.getMoviesByPopulary().subscribe((movies) => {
       this.movies = movies;
       this.movies.forEach((movie) => {
@@ -48,6 +55,7 @@ export default class MoviesComponent implements OnInit {
         });
       });
     });
+    // Récupérer les animes du premier genre par défaut
     this.getAnimesByChange(this.genres[0].id);
   }
 }

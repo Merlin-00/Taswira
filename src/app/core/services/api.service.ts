@@ -8,10 +8,13 @@ import { Movie } from '../models/movie.model';
   providedIn: 'root',
 })
 export class ApiService {
+  // URL de base de l'API
   API = 'https://api.themoviedb.org/3';
   http = inject(HttpClient);
+  // Clé API pour accéder à l'API
   apiKey = 'dbfd3e4da2971963ef137f5549fccf30';
 
+  // Récupérer les films par popularité
   getMoviesByPopulary(): Observable<Movie[]> {
     return this.http
       .get<{ results: Movie[] }>(
@@ -24,6 +27,7 @@ export class ApiService {
       );
   }
 
+  // Récupérer les animes par genre
   getAnimesByGenre(genreId: number): Observable<Movie[]> {
     return this.http
       .get<{ results: Movie[] }>(
@@ -36,6 +40,7 @@ export class ApiService {
       );
   }
 
+  // Récupérer les bandes-annonces d'un film
   getMovieTrailers(movieId: number): Observable<any> {
     return this.http
       .get<{ results: any[] }>(
@@ -44,6 +49,7 @@ export class ApiService {
       .pipe(map((response) => response.results));
   }
 
+  // Rechercher des films par requête
   searchMovies(query: string): Observable<Movie[]> {
     return this.http
       .get<{ results: Movie[] }>(
@@ -55,6 +61,8 @@ export class ApiService {
         )
       );
   }
+
+  // Récupérer les détails d'un film par ID
   getMovieDetails(id: number): Observable<Movie> {
     return this.http.get<Movie>(
       `${this.API}/movie/${id}?api_key=${this.apiKey}`

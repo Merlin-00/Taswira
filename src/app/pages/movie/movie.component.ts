@@ -46,13 +46,16 @@ import { MatCardModule } from '@angular/material/card';
   `,
 })
 export default class MovieComponent implements OnInit {
+  // Propriété pour stocker les détails du film
   movie?: Movie;
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
+    // Récupérer l'ID du film à partir de l'URL
     const movieId = this.route.snapshot.paramMap.get('id');
     if (movieId) {
+      // Appeler le service API pour obtenir les détails du film
       this.apiService.getMovieDetails(+movieId).subscribe((movie) => {
         this.movie = movie;
       });

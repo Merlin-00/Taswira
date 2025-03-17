@@ -1,0 +1,28 @@
+<main class="movie-container">
+    @if (movie) {
+    <mat-card align="center" class="img-card" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title-group>
+                <mat-card-title>
+                    {{ movie.title }}
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Popularité: {{ movie.popularity}}
+                </mat-card-subtitle>
+                <img [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" width="300px" height="auto"
+                    alt="{{ movie.title }}">
+            </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content>
+            <p><strong>Résumé:</strong> {{ movie.overview }}</p>
+            <p><strong>Date de sortie:</strong> {{ movie.release_date }}</p>
+            <p><strong>Langue originale:</strong> {{ movie.original_language }}</p>
+            <p><strong>Note moyenne:</strong> {{ movie.vote_average }}</p>
+            <p><strong>Nombre de votes:</strong> {{ movie.vote_count }}</p>
+        </mat-card-content>
+    </mat-card>
+    } @else {
+    <p align="center" class="NetError">Oups! impossible de charger le contenu <br>
+        vérifier votre connexion internet.</p>
+    }
+</main>

@@ -1,0 +1,61 @@
+<main class="container">
+    <section class="item">
+        <h2 class="h">Films Populaires</h2>
+        @if (movies && movies.length) {
+        @for (movie of movies; track $index) {
+        <mat-card [routerLink]="'/movie/' + movie.id" class="img-card" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title-group>
+                    <mat-card-title>
+                        {{ movie.title }}
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                        Popularité: {{ movie.popularity }}
+                    </mat-card-subtitle>
+                </mat-card-title-group>
+            </mat-card-header>
+            <img mat-card-image [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" alt="{{ movie.title }}">
+        </mat-card>
+        }
+        }@else {
+        <div class="load" align="center">
+        </div>
+        }
+    </section>
+    <section class="item">
+        <div class="categorie">
+            <h2>Animés Populaires</h2>
+            <span>
+                <label for="genre">Choisir un genre: </label>
+                <select id="genre" (change)="onGenreChange($event)">
+                    <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+                </select>
+            </span>
+        </div>
+        @if (animes && animes.length) {
+        @for (anime of animes; track $index) {
+        <mat-card [routerLink]="'/movie/' + anime.id" class="img-card" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title-group>
+                    <mat-card-title>
+                        {{ anime.title }}
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                        Popularité: {{ anime.popularity }}
+                    </mat-card-subtitle>
+                </mat-card-title-group>
+            </mat-card-header>
+            <img mat-card-image [src]="'https://image.tmdb.org/t/p/w500' + anime.backdrop_path" alt="{{ anime.title }}">
+        </mat-card>
+        }
+        }@else {
+        <div class="load" align="center">
+        </div>
+        }
+    </section>
+</main>
+
+@if ((movies && movies.length === 0) || (animes && animes.length === 0)) {
+<p align="center" class="NetError">Oups! impossible de charger le contenu <br>
+    vérifier votre connexion internet.</p>
+}

@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <header class="container">
       <div align="center" class="item">
-        <h1>Bienvenue sur Taswira</h1>
+        <h1>Bienvenue sur <strong>Taswira</strong></h1>
         <h3>une application qui classe les videos par popularité</h3>
         <br />
         <input

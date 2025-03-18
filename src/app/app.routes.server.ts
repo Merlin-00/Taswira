@@ -11,10 +11,14 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'movies',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: 'search',
     renderMode: RenderMode.Client,
   },
   {
     path: 'movie/:id',
-    renderMode: RenderMode.Client,
+    renderMode: RenderMode.Server,
   },
 ];

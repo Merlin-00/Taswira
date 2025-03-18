@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Movie } from '../models/movie.model';
+import { Movie, MovieDetails } from '../models/movie.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +14,24 @@ export class ApiService {
   // Clé API pour accéder à l'API
   apiKey = 'dbfd3e4da2971963ef137f5549fccf30';
 
-  // Récupérer les films par popularité
-  getMoviesByPopulary(): Observable<Movie[]> {
+  // sont mes options pour l'API de The Movie Database
+  options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization:
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMjJkZjBmNzY3YmZhZTNkZjBiZDc3ZGU0NjRiNDRmMSIsIm5iZiI6MTY3NTEzMzc3OC4yMzcsInN1YiI6IjYzZDg4MzUyMTJiMTBlMDA3ZmRjNDE5OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7EpK97liyiuvOEcBb-Uf3EJi-tk9hvWF2quyUW-Q6yg',
+    },
+  };
+
+  getMovies(query: string, genre?: string) {
+    const url = genre
+      ? `${this.API}/movie/${query}?api_key=${this.apiKey}&language=fr-FR&page=1&with_genres=${genre}`
+      : `${this.API}/movie/${query}?api_key=${this.apiKey}&language=fr-FR&page=1`;
+    const genreUrl = `${this.API}/discover/movie?api_key=${this.apiKey}&with_genres=${genre}`;
     return this.http
-      .get<{ results: Movie[] }>(
-        `${this.API}/movie/popular?api_key=${this.apiKey}`
-      )
-      .pipe(
-        map((response) =>
-          response.results.sort((a, b) => b.popularity - a.popularity)
-        )
-      );
+      .get<{ results: Movie[] }>(genre ? genreUrl : url, this.options)
+      .pipe(map((response) => response.results));
   }
 
   // Récupérer les animes par genre
@@ -63,8 +70,8 @@ export class ApiService {
   }
 
   // Récupérer les détails d'un film par ID
-  getMovieDetails(id: number): Observable<Movie> {
-    return this.http.get<Movie>(
+  getMovieDetails(id: number): Observable<MovieDetails> {
+    return this.http.get<MovieDetails>(
       `${this.API}/movie/${id}?api_key=${this.apiKey}`
     );
   }

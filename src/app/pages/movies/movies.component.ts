@@ -1,10 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { Movie } from '../../core/models/movie.model';
 import { ApiService } from '../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-movies',
@@ -12,12 +20,40 @@ import { RouterLink } from '@angular/router';
   templateUrl: './movies.component.html',
   styleUrls: ['./movies.component.scss'],
 })
-export default class MoviesComponent implements OnInit {
-  // Propriété pour stocker les films populaires
+export default class MoviesComponent implements OnInit, OnDestroy {
+  // Rendre le composant reutilisable
+  sectionTitle = input.required<string>();
+  query = input.required<string>();
+  keyword = input<string>();
   movies?: Movie[];
+  filteredMovies?: Movie[];
   // Propriété pour stocker les bandes-annonces des films
   trailers: { [key: number]: any[] } = {};
   api = inject(ApiService);
+  moviesSub$!: Subscription;
+  loading = signal(true);
+
+  ngOnInit(): void {
+    // Récupérer les films selon la requête
+    if (this.keyword()) {
+      console.log('hey');
+      this.moviesSub$ = this.api
+        .searchMovies(this.keyword()!)
+        .subscribe((movies) => {
+          this.movies = movies;
+          this.filteredMovies = movies;
+
+          this.loading.set(false);
+        });
+    } else {
+      this.moviesSub$ = this.api.getMovies(this.query()).subscribe((movies) => {
+        this.movies = movies;
+        this.filteredMovies = movies;
+        this.loading.set(false);
+      });
+    }
+  }
+
   // Liste des genres d'animes
   genres = [
     { id: 28, name: 'Action' },
@@ -29,33 +65,26 @@ export default class MoviesComponent implements OnInit {
     { id: 10749, name: 'Romance' },
     { id: 878, name: 'Science-Fiction' },
   ];
-  // Propriété pour stocker les animes par genre
-  animes: Movie[] = [];
-
-  // Méthode pour récupérer les animes par genre
-  getAnimesByChange(genreId: number): void {
-    this.api.getAnimesByGenre(genreId).subscribe((anime) => {
-      this.animes = anime.filter((anim) => anim.original_language === 'ja');
-    });
-  }
 
   // Méthode appelée lors du changement de genre
   onGenreChange(event: Event): void {
+    this.loading.set(true);
     const genreId = (event.target as HTMLSelectElement).value;
-    this.getAnimesByChange(Number(genreId));
+    if (genreId === 'all') {
+      this.filteredMovies = this.movies;
+      this.loading.set(false);
+      return;
+    }
+    // on va recuperer les films par genre etant donné que chaque film a genre_ids[]
+    const newMovies = this.movies?.filter((movie) =>
+      movie.genre_ids.includes(Number(genreId))
+    );
+    this.filteredMovies = newMovies;
+    this.loading.set(false);
   }
 
-  ngOnInit(): void {
-    // Récupérer les films populaires au chargement du composant
-    this.api.getMoviesByPopulary().subscribe((movies) => {
-      this.movies = movies;
-      this.movies.forEach((movie) => {
-        this.api.getMovieTrailers(movie.id).subscribe((trailers) => {
-          this.trailers[movie.id] = trailers;
-        });
-      });
-    });
-    // Récupérer les animes du premier genre par défaut
-    this.getAnimesByChange(this.genres[0].id);
+  ngOnDestroy(): void {
+    // je dois me desabonner de l'observable
+    this.moviesSub$.unsubscribe();
   }
 }

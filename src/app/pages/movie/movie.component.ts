@@ -1,64 +1,115 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { Movie } from '../../core/models/movie.model';
-import { MatCardModule } from '@angular/material/card';
+import { MovieDetails } from '../../core/models/movie.model';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-movie',
-  imports: [MatCardModule],
+  imports: [],
   templateUrl: './movie.component.html',
   styles: `
- .movie-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-      background: linear-gradient(to right, rgb(50, 50, 99), rgb(103, 103, 250));
-    }
-    .img-card {
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-      color: black;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
-    .NetError {
-      color: #fffacd;
-    }
-    mat-card-title {
-      color: #078ebb;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    mat-card-subtitle {
-      font-size: 1rem;
-      color: gray;
-    }
-    mat-card-content p {
-      font-size: 1rem;
-      line-height: 1.5;
-    }
+      main {
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        min-height: 70vh;
+        flex-wrap: wrap;
+        gap:2rem;
+
+        .img-section {
+          max-width: 300px;
+          img {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+          }
+        }
+
+        .content {
+          flex:1;
+          .additional-info {
+            display: flex;
+            gap:1rem;
+            align-items: center;
+
+            h1 {
+              margin: 0;
+            }
+
+            p {
+              color: var(--primary-color);
+            }
+
+            div {
+              display: flex;
+              gap: 1rem;
+
+              span {
+                background-color: var(--primary-color);
+                color: #fff;
+                padding: 0.5rem;
+                font-size: 0.8rem;
+                border-radius: 5px;
+              }
+            }
+          }
+
+          .companies {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            div {
+              display: flex;
+              gap: 0.5rem;
+              align-items: center;
+              img {
+                width: 40px;
+              }
+            }
+          }
+        }
+
+        img{
+          width:40px
+        }
+      }
   `,
 })
-export default class MovieComponent implements OnInit {
+export default class MovieComponent implements OnInit, OnDestroy {
+  id = input.required<number>();
+  loading = signal(true);
   // Propriété pour stocker les détails du film
-  movie?: Movie;
+  movie!: MovieDetails;
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
+  movieSub$!: Subscription;
 
   ngOnInit(): void {
-    // Récupérer l'ID du film à partir de l'URL
-    const movieId = this.route.snapshot.paramMap.get('id');
-    if (movieId) {
-      // Appeler le service API pour obtenir les détails du film
-      this.apiService.getMovieDetails(+movieId).subscribe((movie) => {
-        this.movie = movie;
-      });
-    }
+    this.apiService.getMovieDetails(this.id()).subscribe((movie) => {
+      this.movie = movie;
+
+      this.loading.set(false);
+    });
+    // // Récupérer l'ID du film à partir de l'URL
+    // const movieId = this.route.snapshot.paramMap.get('id');
+    // if (movieId) {
+    //   // Appeler le service API pour obtenir les détails du film
+    //   this.apiService.getMovieDetails(+movieId).subscribe((movie) => {
+    //     this.movie = movie;
+    //   });
+    // }
+  }
+
+  ngOnDestroy(): void {
+    this.movieSub$?.unsubscribe();
   }
 }

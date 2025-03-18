@@ -1,31 +1,62 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use "@angular/material" as mat;
-
-html {
-  @include mat.theme(
-    (
-      color: (
-        theme-type: light,
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
-} /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: hsl(0, 100%, 77%); // #f3a333
+  --secondary-color: hsl(0, 100%, 77%); // #f3a333
+  --shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
 html,
 body {
   height: 100%;
-  color: #078ebb;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: linear-gradient(to right, rgb(50, 50, 99), rgb(103, 103, 250));
+  font-family: "Poppins", sans-serif;
 }
 a {
   text-decoration: none;
+}
+
+.btn {
+  // a beautiful button
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+  &:hover {
+    background-color: var(--secondary-color);
+  }
+}
+
+// le skeletn loading
+.skeleton {
+  background-color: #f0f0f0; /* Light gray background */
+  border-radius: 4px; /* Optional: Rounded corners */
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-line {
+  height: 10px;
+  background-color: #f0f0f0;
+  margin-top: 5px;
+  border-radius: 2px;
+  animation: skeleton-pulse 1.5s infinite ease-in-out; /* Apply pulse to lines too */
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }

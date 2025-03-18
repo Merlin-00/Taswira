@@ -1,28 +1,88 @@
-<main class="movie-container">
-    @if (movie) {
-    <mat-card align="center" class="img-card" appearance="outlined">
-        <mat-card-header>
-            <mat-card-title-group>
-                <mat-card-title>
-                    {{ movie.title }}
-                </mat-card-title>
-                <mat-card-subtitle>
-                    Popularité: {{ movie.popularity}}
-                </mat-card-subtitle>
-                <img [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" width="300px" height="auto"
-                    alt="{{ movie.title }}">
-            </mat-card-title-group>
-        </mat-card-header>
-        <mat-card-content>
-            <p><strong>Résumé:</strong> {{ movie.overview }}</p>
-            <p><strong>Date de sortie:</strong> {{ movie.release_date }}</p>
-            <p><strong>Langue originale:</strong> {{ movie.original_language }}</p>
-            <p><strong>Note moyenne:</strong> {{ movie.vote_average }}</p>
-            <p><strong>Nombre de votes:</strong> {{ movie.vote_count }}</p>
-        </mat-card-content>
-    </mat-card>
-    } @else {
-    <p align="center" class="NetError">Oups! impossible de charger le contenu <br>
-        vérifier votre connexion internet.</p>
-    }
+@if(loading()){
+<main>
+  <div
+    class="img-section skeleton"
+    style="max-width: 300px; border-radius: 8px"
+  >
+    <div style="width: 100%; height: 500px"></div>
+  </div>
+
+  <div class="content">
+    <div class="additional-info">
+      <h1 class="skeleton" style="width: 60%; height: 30px"></h1>
+      <p class="skeleton" style="width: 40px; height: 20px"></p>
+      <div>
+        <span class="skeleton" style="width: 60px; height: 25px"></span>
+        <span class="skeleton" style="width: 80px; height: 25px"></span>
+      </div>
+    </div>
+
+    <div
+      class="skeleton"
+      style="width: 80%; height: 15px; margin-top: 1rem"
+    ></div>
+    <div
+      class="skeleton"
+      style="width: 90%; height: 15px; margin-top: 0.5rem"
+    ></div>
+    <div
+      class="skeleton"
+      style="width: 70%; height: 15px; margin-top: 0.5rem"
+    ></div>
+
+    <div class="companies" style="margin-top: 1rem">
+      <div class="skeleton" style="width: 100px; height: 50px"></div>
+      <div class="skeleton" style="width: 120px; height: 50px"></div>
+      <div class="skeleton" style="width: 80px; height: 50px"></div>
+      <div class="skeleton" style="width: 110px; height: 50px"></div>
+    </div>
+  </div>
 </main>
+}@else {
+<main>
+  <div class="img-section">
+    <img
+      [src]="'https://image.tmdb.org/t/p/original/' + movie.poster_path"
+      alt=""
+    />
+  </div>
+
+  <div class="content">
+    <h1 style="margin: 0">{{ movie.title }}</h1>
+    <div class="additional-info">
+      <p>{{ movie.release_date }}</p>
+      <div>
+        @for (genre of movie.genres; track $index) {
+        <span>{{ genre.name }}</span>
+        }
+      </div>
+    </div>
+
+    <h3>{{ movie.tagline }}</h3>
+
+    @if(movie.overview){
+
+    <div>
+      <h3>Appercu :</h3>
+      <p>{{ movie.overview }}</p>
+    </div>
+    } @if(movie.production_companies.length) {
+
+    <div>
+      <h3>Entreprises :</h3>
+      <div class="companies">
+        @for (company of movie.production_companies; track $index) {
+        <div>
+          <img
+            [src]="'https://image.tmdb.org/t/p/original/' + company.logo_path"
+            alt=""
+          />
+          <p>{{ company.name }}</p>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</main>
+}

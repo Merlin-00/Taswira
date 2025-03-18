@@ -1,26 +1,55 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-toolbar',
-  imports: [RouterLink, MatToolbarModule, MatIconModule],
+  imports: [RouterLink, MatIconModule],
   template: `
-    <mat-toolbar>
+    <header>
       <a routerLink="/"><h2>Taswira</h2></a>
-      <input type="search" />
-    </mat-toolbar>
+
+      <form (submit)="onSearch($event)">
+        <input type="search" placeholder="Chercher un film .." />
+      </form>
+    </header>
   `,
   styles: `
-  mat-toolbar{
+  header{
     position: sticky;
     top: 0;
-    z-index: 100;
-    height: 3rem;
+    background-color: #fff;
+    z-index: 10;
+    height: 64px;
+    align-items: center;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 0 1rem;
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      margin-left: 10px;
+      width: 300px;
+      outline: none;
+      border: 1px solid #ccc;
+      &:focus {
+        border: 1px solid var(--primary-color);
+      }
+    }
   }
   `,
 })
-export class ToolbarComponent {}
+export class ToolbarComponent {
+  router = inject(Router);
+
+  onSearch(event: any) {
+    event.preventDefault();
+    // utilisation de queryParams pour passer le mot clé de recherche
+    this.router.navigate(['/search'], {
+      queryParams: { keyword: event.target[0].value },
+    });
+  }
+}

@@ -1,61 +1,61 @@
-<main class="container">
-    <section class="item">
-        <h2 class="h">Films Populaires</h2>
-        @if (movies && movies.length) {
-        @for (movie of movies; track $index) {
-        <mat-card [routerLink]="'/movie/' + movie.id" class="img-card" appearance="outlined">
-            <mat-card-header>
-                <mat-card-title-group>
-                    <mat-card-title>
-                        {{ movie.title }}
-                    </mat-card-title>
-                    <mat-card-subtitle>
-                        Popularité: {{ movie.popularity }}
-                    </mat-card-subtitle>
-                </mat-card-title-group>
-            </mat-card-header>
-            <img mat-card-image [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" alt="{{ movie.title }}">
-        </mat-card>
+<div>
+  <!-- Je vais implementer le filter par genre ici -->
+  <div class="header-container">
+    <h2>{{ sectionTitle() }}</h2>
+    <div>
+      <select (change)="onGenreChange($event)">
+        <option value="all">All</option>
+        @for(genre of genres; track $index){
+        <option value="{{ genre.id }}">{{ genre.name }}</option>
         }
-        }@else {
-        <div class="load" align="center">
-        </div>
-        }
-    </section>
-    <section class="item">
-        <div class="categorie">
-            <h2>Animés Populaires</h2>
-            <span>
-                <label for="genre">Choisir un genre: </label>
-                <select id="genre" (change)="onGenreChange($event)">
-                    <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
-                </select>
-            </span>
-        </div>
-        @if (animes && animes.length) {
-        @for (anime of animes; track $index) {
-        <mat-card [routerLink]="'/movie/' + anime.id" class="img-card" appearance="outlined">
-            <mat-card-header>
-                <mat-card-title-group>
-                    <mat-card-title>
-                        {{ anime.title }}
-                    </mat-card-title>
-                    <mat-card-subtitle>
-                        Popularité: {{ anime.popularity }}
-                    </mat-card-subtitle>
-                </mat-card-title-group>
-            </mat-card-header>
-            <img mat-card-image [src]="'https://image.tmdb.org/t/p/w500' + anime.backdrop_path" alt="{{ anime.title }}">
-        </mat-card>
-        }
-        }@else {
-        <div class="load" align="center">
-        </div>
-        }
-    </section>
-</main>
+      </select>
+    </div>
+  </div>
 
-@if ((movies && movies.length === 0) || (animes && animes.length === 0)) {
-<p align="center" class="NetError">Oups! impossible de charger le contenu <br>
-    vérifier votre connexion internet.</p>
-}
+  @if(loading()){
+  <div class="movies-container">
+    @for(loader of [1,2,3,4,5,6,7,8,9]; track $index){
+    <div class="movie-card skeleton">
+      <div style="height: 200px; width: 100%"></div>
+      <div class="info">
+        <h2
+          class="skeleton"
+          style="width: 70%; height: 20px; margin-bottom: 5px"
+        ></h2>
+        <p
+          class="skeleton"
+          style="width: 50%; height: 15px; margin-bottom: 10px"
+        ></p>
+        <div class="rating">
+          <span class="skeleton" style="width: 40px; height: 20px"></span>
+          <span class="skeleton" style="width: 60px; height: 20px"></span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @if(filteredMovies?.length && !loading()){
+
+  <div class="movies-container">
+    @for(movie of filteredMovies ; track $index){
+    <div class="movie-card" [routerLink]="'/movie/' + movie.id">
+      <img
+        [src]="'https://image.tmdb.org/t/p/original/' + movie.poster_path"
+        alt="In a Violent Nature"
+      />
+      <div class="info">
+        <h3 style="text-wrap: balance">{{ movie.title }}</h3>
+        <p>{{ movie.release_date }}</p>
+        <div class="rating">
+          <span>{{ movie.popularity }}%</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }@else {
+  <div align="center" style="padding: 1rem">
+    <p>Nous n'avons pas trouvé de films correspondant à votre recherche</p>
+  </div>
+  }
+</div>

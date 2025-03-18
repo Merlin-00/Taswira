@@ -4,74 +4,40 @@ import { ApiService } from '../../core/services/api.service';
 import { Movie } from '../../core/models/movie.model';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [MoviesComponent, CommonModule, MatCardModule, RouterLink],
+  imports: [MoviesComponent, CommonModule, MatCardModule],
   template: `
-    <header class="container">
-      <div align="center" class="item">
-        <h1>Bienvenue sur Taswira</h1>
-        <h3>une application qui classe les videos par popularité</h3>
-        <br />
-        <input
-          type="search"
-          placeholder="rechercher un titre dans taswira"
-          maxlength="100"
-          (input)="onSearch($event)"
-          (blur)="onBlur()"
-        />
-        @if (searchResults &&searchPerformed && searchResults.length === 0) {
-        <p>Aucun résultat trouvé.</p>
-        }
-      </div>
-      <div class="box">
-        <img
-          src="assets/1695672919891.jpg"
-          width="300px"
-          height="300px"
-          alt="animé picture"
-        />
-      </div>
-    </header>
     <main>
-      @if (searchResults && searchResults.length) { @for (movie of
-      searchResults; track $index) {
-      <mat-card
-        [routerLink]="'/movie/' + movie.id"
-        class="img-card"
-        appearance="outlined"
+      <!-- Je commente cette section , tu pourras y travailler plutard -->
+      <!-- <header
+        style="min-height: 40vh; display: flex; justify-content: center; align-items: center; flex-direction: column; background: #444; color: #fff; text-align: center; border-radius: 8px; margin-top: 1rem;"
       >
-        <mat-card-header>
-          <mat-card-title-group>
-            <mat-card-title>
-              {{ movie.title }}
-            </mat-card-title>
-            <mat-card-subtitle>
-              Popularité: {{ movie.popularity }}
-            </mat-card-subtitle>
-          </mat-card-title-group>
-        </mat-card-header>
-        <img
-          mat-card-image
-          [src]="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path"
-          alt="{{ movie.title }}"
-        />
-      </mat-card>
-      } }
+        <div style="z-index: 1;">
+          <h1>Bienvenue sur Taswira</h1>
+          <h3>Une application qui classe les vidéos par popularité</h3>
+          <button class="btn">Voir tous les films</button>
+        </div>
+
+        <div
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('your-background-image.jpg') center/cover no-repeat; opacity: 0.2; z-index: 0;"
+        ></div>
+      </header> -->
+
+      <div style="padding: 1rem;">
+        <app-movies
+          sectionTitle="Films populaires"
+          query="popular"
+        ></app-movies>
+      </div>
+      <div style="padding: 1rem;">
+        <app-movies sectionTitle="Films A venir" query="upcoming"></app-movies>
+      </div>
     </main>
-    @if (!searchResults || !searchResults.length) {
-    <app-movies></app-movies>
-    }
   `,
   styles: ` 
-  .container{
-    display: flex;
-    justify-content: space-between;
-    padding: 2rem;
-    background: #f0f4ff;
-  }
+ 
   .img-card {
   max-width: 400px;
   margin-bottom: 8px;

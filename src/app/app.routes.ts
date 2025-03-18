@@ -11,6 +11,13 @@ export const routes: Routes = [
     title: 'Taswira',
     loadComponent: () => import('./pages/home/home.component'),
   },
+
+  {
+    path: 'search',
+    title: 'Resultats de recherche',
+    loadComponent: () => import('./pages/search/search.component'),
+  },
+
   {
     path: 'movies',
     loadComponent: () => import('./pages/movies/movies.component'),

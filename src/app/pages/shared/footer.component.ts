@@ -35,7 +35,7 @@ import { RouterLink } from '@angular/router';
         <p>
           <b>Taswira {{ date.getFullYear() }}</b
           ><br />
-          Developpé par Merlin Lubambo
+          Developpé par <strong>Merlin Lubambo</strong>
         </p>
       </div>
     </footer>
